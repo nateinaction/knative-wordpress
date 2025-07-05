@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    events {
+      worker_connections 1024;
+    }
+    http {
+      include       mime.types;
+      default_type  application/octet-stream;
+
+      server {
+        listen 80;
+        server_name _;
+        root /var/www/html;
+        index index.php index.html index.htm;
+
+        location / {
+          try_files $uri $uri/ /index.php?$args;
+        }
+
+        # Pass PHP scripts to FastCGI
+        location ~ \.php$ {
+          fastcgi_pass 127.0.0.1:9000;
+          fastcgi_index index.php;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          include fastcgi_params;
+        }
+      }
+    }

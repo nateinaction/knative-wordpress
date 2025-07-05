@@ -1,0 +1,82 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: wordpress
+spec:
+  template:
+    metadata:
+      annotations:
+        # Target 10 in-flight-requests per pod.
+        autoscaling.knative.dev/target: "10"
+        # Set minimum and initial scale to 1 to avoid cold starts.
+        autoscaling.knative.dev/minScale: "1"
+        # Set initial scale to 1 to avoid cold starts.
+        autoscaling.knative.dev/initial-scale: "1"
+        # Set scale down delay to 15 minutes.
+        # This avoids scaling down too quickly when traffic fluctuates.
+        autoscaling.knative.dev/scale-down-delay: "15m"
+        # Rollout duration for new revisions.
+        serving.knative.dev/rollout-duration: "300s"
+    spec:
+      containers:
+        - name: php
+          image: wordpress:php8.4-fpm
+          volumeMounts:
+            - name: website-files
+              mountPath: /var/www/html
+          envFrom:
+            - secretRef:
+                name: wordpress-conf
+          securityContext:
+            allowPrivilegeEscalation: false
+            # TODO: Uncomment when runAsNonRoot is supported
+            # runAsNonRoot: true
+            capabilities:
+              drop:
+                - CAP_NET_RAW
+            seccompProfile:
+              type: RuntimeDefault
+        - name: nginx
+          image: nginx:latest
+          volumeMounts:
+            - name: website-files
+              mountPath: /var/www/html
+            - name: "nginx-config"
+              mountPath: "/etc/nginx/nginx.conf"
+              subPath: "nginx.conf"
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          securityContext:
+            allowPrivilegeEscalation: false
+            # TODO: Uncomment when runAsNonRoot is supported
+            # runAsNonRoot: true
+            capabilities:
+              drop:
+                - CAP_NET_RAW
+            seccompProfile:
+              type: RuntimeDefault
+        - name: site
+          image: nateinaction/knative-wordpress-site:latest
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: website-files
+              mountPath: /var/www/html
+          securityContext:
+            runAsNonRoot: true
+            capabilities:
+              drop: [ALL]
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        # Looks like support for 1.31 image volumes is on the way
+        # https://github.com/knative/serving/pull/15878
+        # - name: "website-files"
+        #   image:
+        #     reference: nateinaction/knative-wordpress-site:latest
+        - name: website-files
+          emptyDir: {}
+        - name: "nginx-config"
+          configMap:
+            name: "nginx-config"
+            optional: false

@@ -2,9 +2,55 @@
 
 This repository contains a Knative service for running WordPress with PHP and Nginx.
 
+## Kind Setup
+
+Spin up a kind cluster with Knative installed:
+
 ```sh
-kubectl apply -f service.yaml
+# install kind
+brew install kind
+
+# install knative cli
+brew install knative/client/kn
+
+# install knative quickstart plugin
+brew install knative-extensions/kn-plugins/quickstart
+
+# create a kind cluster with knative
+kn quickstart kind
 ```
+
+Now deploy the application
+```sh
+kubectl apply -k config
+```
+
+## Database Setup
+
+Create the database
+
+```sh
+# Get the root password from the secret
+kubectl get secret -n db internal-cluster1 --template='{{.data.root | base64decode}}{{"\n"}}'
+
+# Create a shell in a MySQL client pod
+kubectl run --rm -i -n db --tty mysql-client --image=mysql:latest --restart=Never -- bash -il
+
+# Connect to the MySQL server
+mysql -h cluster1-haproxy -u root -p '<root_password>'
+
+# Create the WordPress database
+CREATE DATABASE wordpress;
+
+# Create a user for WordPress
+CREATE USER 'wordpress'@'%' IDENTIFIED BY '<password>';
+GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpress'@'%';
+FLUSH PRIVILEGES;
+```
+
+Finally, set the database password in the `config/wordpress/secret.yaml` file.
+
+## Load Testing
 
 Use `hey` for load testing:
 

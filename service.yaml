@@ -1,0 +1,75 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: wordpress
+  namespace: default
+spec:
+  template:
+    metadata:
+      annotations:
+        # Target 10 in-flight-requests per pod.
+        autoscaling.knative.dev/target: "10"
+    spec:
+      containers:
+        - name: php
+          image: wordpress:php8.4-fpm
+          volumeMounts:
+            - name: website-files
+              mountPath: /var/www/html
+        - name: nginx
+          image: nginx:latest
+          volumeMounts:
+            - name: website-files
+              mountPath: /var/www/html
+            - name: "nginx-config"
+              mountPath: "/etc/nginx/nginx.conf"
+              subPath: "nginx.conf"
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      volumes:
+        # Looks like support for 1.31 image volumes is on the way
+        # https://github.com/knative/serving/pull/15878
+        # - name: "website-files"
+        #   image:
+        #     reference: my-image:tag
+        - name: website-files
+          emptyDir: {}
+        - name: "nginx-config"
+          configMap:
+            name: "nginx-config"
+            optional: false
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: default
+data:
+  nginx.conf: |
+    events {
+      worker_connections 1024;
+    }
+    http {
+      include       mime.types;
+      default_type  application/octet-stream;
+
+      server {
+        listen 80;
+        server_name _;
+        root /var/www/html;
+        index index.php index.html index.htm;
+
+        location / {
+          try_files $uri $uri/ /index.php?$args;
+        }
+
+        # Pass PHP scripts to FastCGI
+        location ~ \.php$ {
+          fastcgi_pass 127.0.0.1:9000;
+          fastcgi_index index.php;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          include fastcgi_params;
+        }
+      }
+    }

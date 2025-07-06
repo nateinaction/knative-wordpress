@@ -109,5 +109,3 @@ Details (average, fastest, slowest):
 Status code distribution:
   [200]	3890 responses
 ```
-
-SPARK!

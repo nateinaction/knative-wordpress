@@ -3,6 +3,8 @@ kind: Kustomization
 namespace: wp
 resources:
   - namespace.yaml
+  - deployment-redis.yaml
   - nginx-conf.yaml
   - secret.yaml
-  - service.yaml
+  - k8s-service-redis.yaml
+  - kn-service-wp.yaml

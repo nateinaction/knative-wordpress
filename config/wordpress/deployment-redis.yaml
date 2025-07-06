@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-leader
+  labels:
+    app: redis
+spec:
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - redis
+  template:
+    metadata:
+      name: redis-leader
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis
+          ports:
+            - name: redis
+              containerPort: 6379
+              protocol: TCP

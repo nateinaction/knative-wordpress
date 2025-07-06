@@ -1,6 +1,10 @@
 # knative-wordpress
 
-This repository contains a Knative service for running WordPress with PHP and Nginx.
+This repository contains a Knative service for running WordPress. Knative is a Kubernetes-based platform to deploy and manage serverless workloads. This example uses a Knative service consisting of a [PHP image](https://hub.docker.com/_/wordpress) and an [Nginx image](https://hub.docker.com/_/nginx). The example also uses the [Percona Operator](https://docs.percona.com/percona-operator-for-mysql/pxc/kubectl.html) to deploy the backing database.
+
+The example does not include page or database caching and is left as an exercise for the reader. My experiments have shown that an in-service database cache like [Relay](https://relay.so/) might be a good choice.
+
+Additionally, this example is prepared to use a Kubernetes 1.31 alpha feature [Read Only Volumes Based On OCI Artifacts](https://kubernetes.io/blog/2024/08/16/kubernetes-1-31-image-volume-source/) but the feature has [not yet shipped](https://github.com/knative/serving/pull/15878) in Knative. As an alternative, a scratch image is added to the Knative service with the WordPress site files and a `sleeper` binary to keep the container running indefinitely. The files are shared via an empty volume mounted to all containers in the service. This is not ideal but works for now.
 
 ## Kind Setup
 

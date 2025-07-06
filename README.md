@@ -1,6 +1,6 @@
-# knative-wordpress
+# Knative WordPress
 
-This repository contains a Knative service for running WordPress. Knative is a Kubernetes-based platform to deploy and manage serverless workloads. This example uses a Knative service consisting of a [PHP image](https://hub.docker.com/_/wordpress) and an [Nginx image](https://hub.docker.com/_/nginx). The example also uses the [Percona Operator](https://docs.percona.com/percona-operator-for-mysql/pxc/kubectl.html) to deploy the backing database.
+This repository contains a Knative service for running WordPress. [Knative](https://knative.dev/) is a Kubernetes-based platform to deploy and manage serverless workloads. This example uses a Knative service consisting of a [PHP image](https://hub.docker.com/_/wordpress) and an [Nginx image](https://hub.docker.com/_/nginx). The example also uses the [Percona Operator](https://docs.percona.com/percona-operator-for-mysql/pxc/kubectl.html) to deploy the backing database.
 
 The example does not include page or database caching and is left as an exercise for the reader. My experiments have shown that an in-service database cache like [Relay](https://relay.so/) might be a good choice.
 
@@ -109,3 +109,5 @@ Details (average, fastest, slowest):
 Status code distribution:
   [200]	3890 responses
 ```
+
+SPARK!

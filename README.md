@@ -90,7 +90,7 @@ kubectl apply -k config
 
 ## Accessing the WordPress Site
 
-You can access the WordPress site at `http://wordpress.default.
+You can access the WordPress site at http://wordpress.wp.127.0.0.1.sslip.io/.
 
 You may want an admin user to log into the WordPress dashboard. You can create an admin user by running the following command:
 

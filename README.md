@@ -1,6 +1,6 @@
 # Knative WordPress
 
-This repository contains a Knative service for running WordPress. [Knative](https://knative.dev/) is a Kubernetes-based platform to deploy and manage serverless workloads. This example uses a Knative service consisting of a [PHP image](https://hub.docker.com/_/wordpress) an [Nginx image](https://hub.docker.com/_/nginx), and a [Redis image](https://hub.docker.com/_/redis). The example also uses the [Percona Operator](https://docs.percona.com/percona-operator-for-mysql/pxc/kubectl.html) to deploy the backing database.
+This repository contains a Knative service for running WordPress. [Knative](https://knative.dev/) is a Kubernetes-based platform to deploy and manage serverless workloads. This example uses a Knative service consisting of a [PHP image](https://hub.docker.com/_/wordpress) an [Nginx image](https://hub.docker.com/_/nginx). The example also uses the [Percona Operator](https://docs.percona.com/percona-operator-for-mysql/pxc/kubectl.html) to deploy the backing database and a [Redis](https://hub.docker.com/_/redis) deployment for database caching.
 
 This example does not include page caching which is left as an exercise for the reader. However the example does include a redis based database cache with a persistently live leader and followers in every serverless workload. There are [a few alternative routes](docs/notes-on-database-cache.md) for database caching that look promising as well.
 

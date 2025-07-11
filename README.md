@@ -27,10 +27,8 @@ flowchart TD
     NGINX -- "/var/www/html" --> SITE
 
     PHP -- "/var/www/html" --> SITE
-    PHP -- ":6379" --> REDISLEADER["redis-leader"]
+    PHP -- ":6379" --> REDIS("redis")
     PHP -- ":3306" --> PERCONA
-
-    REDISLEADER["redis (leader)"] -- ":6379" --> REDIS
   end
 ```
 

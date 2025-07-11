@@ -20,7 +20,6 @@ flowchart TD
     subgraph "Knative Service: wordpress"
       NGINX("nginx")
       PHP("php")
-      REDIS("redis (replica)")
       SITE("website files")
     end
 
@@ -28,7 +27,6 @@ flowchart TD
     NGINX -- "/var/www/html" --> SITE
 
     PHP -- "/var/www/html" --> SITE
-    PHP -- "/var/run/redis/redis.sock" --> REDIS
     PHP -- ":6379" --> REDISLEADER["redis-leader"]
     PHP -- ":3306" --> PERCONA
 

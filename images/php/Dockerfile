@@ -12,6 +12,10 @@ RUN go build -o /app/wp-configurator main.go
 
 FROM wordpress:php8.4-fpm
 
+# Install relay
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+RUN install-php-extensions relay
+
 # Copy the wp-configurator binary
 COPY --from=wp-configurator /app/wp-configurator /usr/local/bin/wp-configurator
 

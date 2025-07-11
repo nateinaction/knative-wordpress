@@ -25,6 +25,8 @@ type WPConfig struct {
 	TablePrefix    string
 	WPDebug        string
 	RedisClient    string
+	RedisHost      string
+	RedisPort      string
 	RedisScheme    string
 	RedisPath      string
 	RedisServers   string
@@ -61,6 +63,21 @@ define( 'WP_DEBUG', true );
 
 {{- if ne .RedisClient "" }}
 define( 'WP_REDIS_CLIENT', '{{ .RedisClient }}' );
+
+{{- if eq .RedisClient "relay" }}
+define( 'WP_REDIS_DATABASE', 0 );
+define( 'WP_REDIS_PREFIX', 'db3:' );
+define( 'WP_REDIS_IGBINARY', true );
+{{- end }}
+
+{{- end }}
+
+{{- if ne .RedisHost "" }}
+define( 'WP_REDIS_HOST', '{{ .RedisHost }}' );
+{{- end }}
+
+{{- if ne .RedisPort "" }}
+define( 'WP_REDIS_PORT', '{{ .RedisPort }}' );
 {{- end }}
 
 {{- if eq .RedisScheme "unix" }}
@@ -104,6 +121,8 @@ func main() {
 		TablePrefix:    os.Getenv("WORDPRESS_TABLE_PREFIX"),
 		WPDebug:        os.Getenv("WORDPRESS_DEBUG"),
 		RedisClient:    os.Getenv("WP_REDIS_CLIENT"),
+		RedisHost:      os.Getenv("WP_REDIS_HOST"),
+		RedisPort:      os.Getenv("WP_REDIS_PORT"),
 		RedisScheme:    os.Getenv("WP_REDIS_SCHEME"),
 		RedisPath:      os.Getenv("WP_REDIS_PATH"),
 		RedisServers:   os.Getenv("WP_REDIS_SERVERS"),

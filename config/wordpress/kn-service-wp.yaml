@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: php
-          image: nateinaction/knative-wordpress-php:7df18f6-dirty
+          image: nateinaction/knative-wordpress-php:4565030-dirty
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: website-files
@@ -60,29 +60,8 @@ spec:
                 - CAP_NET_RAW
             seccompProfile:
               type: RuntimeDefault
-        - name: redis
-          image: redis
-          imagePullPolicy: IfNotPresent
-          args:
-            - "--replicaof"
-            - "redis-leader"
-            - "6379"
-            - "--unixsocket"
-            - "/var/run/redis/redis.sock"
-            - "--unixsocketperm"
-            - "755"
-          volumeMounts:
-            - name: redis-socket
-              mountPath: /var/run/redis
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - CAP_NET_RAW
-            seccompProfile:
-              type: RuntimeDefault
         - name: site
-          image: nateinaction/knative-wordpress-site:2b6c453-dirty
+          image: nateinaction/knative-wordpress-site:4565030-dirty
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: website-files

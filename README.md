@@ -6,6 +6,8 @@ This example does not include page caching which is left as an exercise for the 
 
 Additionally, this example is prepared to use a Kubernetes 1.31 alpha feature [Read Only Volumes Based On OCI Artifacts](https://kubernetes.io/blog/2024/08/16/kubernetes-1-31-image-volume-source/) but the feature has [not yet shipped](https://github.com/knative/serving/pull/15878) in Knative. As an alternative, a scratch image is added to the Knative service with the WordPress site files and a `sleeper` binary to keep the container running indefinitely. The files are shared via an empty volume mounted to all containers in the service. This is not ideal but works for now.
 
+This example is also missing a method to offload media uploads though I have a [few ideas](docs/notes-on-media-uploads.md) on that.
+
 ## Service Diagram
 
 ```mermaid
